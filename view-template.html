@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+/* Vesper palette, lifted for reading: body text well above WCAG AA on #101010. */
+:root {
+  --bg: #101010; --bg-2: #171717; --line: #2c2c2c; --line-2: #3a3a3a;
+  --bright: #ffffff; --text: #e6e6e6; --soft: #bdbdbd; --dim: #8b8b8b;
+  --peach: #ffc799; --mint: #99ffe4; --red: #ff8080;
+  --mono: "Berkeley Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; border-radius: 0 !important; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+body { font: 17px/1.7 var(--sans); -webkit-font-smoothing: antialiased; }
+main { max-width: 1080px; margin: 0 auto; padding: 96px 40px 180px; }
+
+/* Every block is a row: text column on the left, optional metadata margin on the right. */
+.row { display: grid; grid-template-columns: 680px 1fr; gap: 56px; }
+.side { font: 14px/1.7 var(--mono); color: var(--dim); padding-top: 6px; }
+.side b { display: block; color: var(--soft); font-weight: 400; }
+@media (max-width: 1000px) { .row { grid-template-columns: 1fr; gap: 8px; } }
+
+h1 { font-size: 40px; font-weight: 600; color: var(--bright); letter-spacing: -0.025em; line-height: 1.12; margin: 14px 0 20px; }
+h2 { font-size: 24px; font-weight: 600; color: var(--bright); letter-spacing: -0.015em; margin: 0 0 8px; }
+h3 { font-size: 19px; font-weight: 600; color: var(--bright); margin: 0 0 8px; }
+h4 { font-size: 16px; font-weight: 600; color: var(--bright); margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+a { color: var(--peach); }
+strong { color: var(--bright); font-weight: 600; }
+code { font: 0.86em var(--mono); color: var(--bright); background: var(--bg-2); padding: 1px 5px; }
+pre { font: 14px/1.6 var(--mono); background: var(--bg-2); border: 1px solid var(--line); padding: 14px 16px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+ul, ol { padding-left: 22px; }
+table { width: 100%; border-collapse: collapse; font-size: 16px; }
+th, td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 400 13px var(--mono); color: var(--dim); }
+hr { border: 0; border-top: 1px solid var(--line); margin: 48px 0; }
+
+.kicker { font: 13px var(--mono); color: var(--peach); }
+.lede { font-size: 19px; color: var(--soft); line-height: 1.6; margin: 0; }
+.phases { margin: 0; padding: 0; list-style: none; }
+.phases li { color: var(--dim); }
+.phases li.done { color: var(--soft); }
+.phases li.done::after { content: "  ✓"; color: var(--mint); }
+.phases li.now { color: var(--peach); }
+.phases li.now::after { content: "  ←"; }
+
+.item { padding: 22px 0; border-top: 1px solid var(--line); }
+.item h3 span { font: 15px var(--mono); color: var(--peach); margin-right: 14px; }
+.item p:last-child { margin-bottom: 0; }
+
+.note { color: var(--soft); border-left: 2px solid var(--peach); padding: 2px 0 2px 18px; margin: 0; }
+.warn { border-left: 2px solid var(--red); padding: 2px 0 2px 18px; margin: 20px 0; }
+.warn b { color: var(--red); font-weight: 600; }
+.risk { color: var(--red) !important; }
+.ok { color: var(--mint) !important; }
+
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); border: 1px solid var(--line); margin: 16px 0; }
+.opt { padding: 18px 20px; border-left: 1px solid var(--line); }
+.opt:first-child { border-left: 0; }
+.opt.rec { box-shadow: inset 0 2px 0 var(--peach); }
+.opt.rec::before { content: "recommended"; display: block; font: 12px var(--mono); color: var(--peach); margin-bottom: 6px; }
+.opt ul { margin: 0; padding: 0; list-style: none; font-size: 15.5px; color: var(--soft); }
+.opt li { padding: 2px 0; }
+.opt li.pro::before { content: "+  "; color: var(--mint); font-family: var(--mono); }
+.opt li.con::before { content: "−  "; color: var(--red); font-family: var(--mono); }
+
+.checks { list-style: none; padding: 0; margin: 0; font-size: 16px; }
+.checks li { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.checks li::before { content: "[ ]  "; font-family: var(--mono); color: var(--dim); }
+.checks li.done { color: var(--dim); }
+.checks li.done::before { content: "[x]  "; color: var(--mint); }
+
+details { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 12px 0; margin: 16px 0; }
+details summary { cursor: pointer; font: 13px var(--mono); color: var(--dim); }
+.mermaid { color: transparent; margin: 16px 0 0; }
+footer { margin-top: 96px; font: 13px var(--mono); color: var(--dim); }
+
+/* Open questions (.row.ask): pick an option, add a note, copy everything back to the terminal. */
+.ask .opt { cursor: pointer; }
+.ask .opt:hover { background: var(--bg-2); }
+.ask .opt:focus-visible { outline: 2px solid var(--peach); outline-offset: -2px; }
+.ask .opt.picked { background: var(--bg-2); box-shadow: inset 0 0 0 2px var(--mint); }
+.ask .opt.picked h4::after { content: "  ✓ picked"; font: 12px var(--mono); color: var(--mint); }
+.ask textarea { width: 100%; min-height: 64px; margin: 4px 0 0; padding: 10px 12px; font: 15px/1.5 var(--sans);
+  color: var(--text); background: var(--bg-2); border: 1px solid var(--line); resize: vertical; }
+.ask textarea:focus { outline: none; border-color: var(--line-2); }
+#answers { position: fixed; right: 24px; bottom: 24px; padding: 12px 18px; font: 14px var(--mono); cursor: pointer;
+  color: var(--bg); background: var(--peach); border: 0; }
+</style>
+</head>
+<body>
+<main>
+{{CONTENT}}
+<footer>{{SOURCE}} · generated view, the Markdown is the source of truth</footer>
+</main>
+<script>
+// Answers live in localStorage per file, so a rebuild or reload keeps them. The terminal gets them by paste:
+// a file:// page cannot write to disk.
+const asks = [...document.querySelectorAll(".row.ask")];
+if (asks.length) {
+  const key = "rpi-answers:" + location.pathname;
+  const saved = JSON.parse(localStorage.getItem(key) || "{}");
+  const title = q => (q.querySelector("h2, h3")?.textContent || "").replace(/^\d+\s*/, "").trim();
+  const save = () => localStorage.setItem(key, JSON.stringify(Object.fromEntries(asks.map(q => [title(q), {
+    pick: q.querySelector(".opt.picked h4")?.textContent.trim() || "",
+    note: q.querySelector("textarea").value.trim() }]))));
+
+  asks.forEach(q => {
+    const s = saved[title(q)] || {};
+    const note = document.createElement("textarea");
+    note.placeholder = "Note (optional)";
+    note.value = s.note || "";
+    note.addEventListener("input", save);
+    (q.querySelector(".opts") || q.querySelector("h2, h3")).after(note);
+    // Options are divs, so they get radio semantics and keyboard activation by hand.
+    const opts = [...q.querySelectorAll(".opt")];
+    const mark = picked => opts.forEach(x => {
+      x.classList.toggle("picked", x === picked);
+      x.setAttribute("aria-checked", x === picked);
+    });
+    q.querySelector(".opts")?.setAttribute("role", "radiogroup");
+    q.querySelector(".opts")?.setAttribute("aria-label", title(q));
+    mark(opts.find(o => o.querySelector("h4")?.textContent.trim() === s.pick));
+    opts.forEach(o => {
+      o.tabIndex = 0;
+      o.setAttribute("role", "radio");
+      o.addEventListener("click", () => { mark(o.classList.contains("picked") ? null : o); save(); });
+      o.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); o.click(); }
+      });
+    });
+  });
+
+  const button = document.createElement("button");
+  button.id = "answers";
+  button.textContent = "Copy answers";
+  button.addEventListener("click", async () => {
+    const all = JSON.parse(localStorage.getItem(key) || "{}");
+    const lines = asks.map((q, i) => {
+      const a = all[title(q)] || {};
+      const parts = [a.pick || "no option picked", a.note && "note: " + a.note].filter(Boolean);
+      return `Q${i + 1} ${title(q)}: ${parts.join(". ")}`;
+    });
+    const text = `Answers from ${document.querySelector("footer").textContent.split(" · ")[0]}:\n` + lines.join("\n");
+    try { await navigator.clipboard.writeText(text); }
+    catch {
+      const t = Object.assign(document.createElement("textarea"), { value: text });
+      document.body.append(t); t.select(); document.execCommand("copy"); t.remove();
+    }
+    button.textContent = "Copied, paste it in the terminal";
+    setTimeout(() => button.textContent = "Copy answers", 2500);
+  });
+  document.body.append(button);
+}
+</script>
+<script type="module">
+if (document.querySelector(".mermaid")) {
+  const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+  mermaid.initialize({ startOnLoad: false, theme: "base", themeVariables: {
+    background: "#101010", primaryColor: "#171717", primaryBorderColor: "#4a4a4a", primaryTextColor: "#ffffff",
+    lineColor: "#8b8b8b", fontFamily: "ui-monospace, SF Mono, Menlo, monospace", fontSize: "14px" },
+    // Tight spacing keeps wide flows near natural size instead of shrinking the text.
+    flowchart: { nodeSpacing: 18, rankSpacing: 22, padding: 8, diagramPadding: 0 } });
+  await mermaid.run({ querySelector: ".mermaid" });
+  document.querySelectorAll(".mermaid").forEach(m => m.style.color = "");
+}
+</script>
+</body>
+</html>

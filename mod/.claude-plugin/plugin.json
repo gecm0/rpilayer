@@ -1,0 +1,1 @@
+{ "name": "rpilayer-band", "version": "0.1.0", "description": "Shows rpilayer task progress above the prompt while the skill runs", "types": "./types/index.d.ts" }
