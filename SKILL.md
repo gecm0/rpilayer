@@ -43,7 +43,7 @@ Everything you need is in this file, the JSON, `<base>`, and `<agents>`. Do not 
   - `intent` confidence below 0.7: ask the user one short question instead of guessing.
   - `advance` runs `next`. `iterate` runs `iterate`. `question`: answer it yourself, no step. `other`: leave the workflow.
   - No artifacts yet: `product_first` ≥ 0.6 runs `create-prd`, otherwise `create-research-questions`.
-- Plain "/rpilayer" or "continue": run `next`.
+- Plain "/rpilayer" (or `/rpilayer:rpilayer`, `/skill:rpilayer`) or "continue": run `next`.
 - A HumanLayer text says "run `/rpi:<x>`": that is step `<x>`, run it through section 3.
 
 Say the chosen step in one line, then run it.
@@ -94,11 +94,12 @@ Apply this section after the whole implementation loop, never between its phases
 
 A skill cannot clear its own context; only the user can. So end every completed step by telling them exactly what to type. Rerun `state` first and read `next`.
 
-- **Moving to a new phase** (you finished a `create-*` or `implement-*` step, or `next` is a different phase than the one you just ran): the artifacts carry everything, and this conversation is now noise. End with the clear command for this harness, then `/rpilayer`:
+- **Moving to a new phase** (you finished a `create-*` or `implement-*` step, or `next` is a different phase than the one you just ran): the artifacts carry everything, and this conversation is now noise. End with the clear command for this harness, then the command that invoked this skill (`/rpilayer` as a skills-dir skill, `/rpilayer:rpilayer` as a Claude Code plugin, `/skill:rpilayer` in pi):
 
   ```
   Next: /clear, then /rpilayer        (Claude Code)
-  Next: /new, then /rpilayer          (Codex, OpenCode, pi)
+  Next: /new, then /rpilayer          (Codex, OpenCode)
+  Next: /new, then /skill:rpilayer    (pi)
   ```
 
   Name only the line for the harness you are running in.

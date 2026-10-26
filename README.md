@@ -24,22 +24,33 @@ The HumanLayer app normally supplies the task directory, design-question trackin
 
 ## Install
 
-Requires Claude Code, Python 3, and Git.
+Requires Python 3 and Git. `judge` needs `TYPESAFE_API_KEY` in the environment.
+
+### Claude Code plugin
+
+```
+/plugin install rpilayer --marketplace gecm0/rpilayer
+/plugin install rpilayer-band --marketplace gecm0/rpilayer
+```
+
+`rpilayer-band` is optional: it draws the workflow steps above the prompt. Then type `/rpilayer:rpilayer`.
+
+### pi package
+
+```bash
+pi install git:github.com/gecm0/rpilayer
+```
+
+Then type `/skill:rpilayer`. The progress band is Claude Code only.
+
+### Manual
 
 ```bash
 git clone https://github.com/gecm0/rpilayer.git ~/Developer/rpilayer
 ln -s ~/Developer/rpilayer ~/.claude/skills/rpilayer
 ```
 
-`judge` needs `TYPESAFE_API_KEY` in the environment.
-
-For the progress band, add the mod directory to `~/.claude/settings.json`:
-
-```json
-{ "env": { "CLAUDE_CODE_PLUGIN_DIRS": "/path/to/rpilayer/mod" } }
-```
-
-Then type `/rpilayer` in Claude Code.
+Then type `/rpilayer`. For the band, set `CLAUDE_CODE_PLUGIN_DIRS` to `~/Developer/rpilayer/mod` in the `env` block of `~/.claude/settings.json`.
 
 ## Tests
 

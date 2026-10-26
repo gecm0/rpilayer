@@ -1,0 +1,9 @@
+{
+  "name": "rpilayer",
+  "version": "0.1.0",
+  "description": "Run HumanLayer's Research-Plan-Implement workflow locally, without the HumanLayer app",
+  "author": { "name": "German Castro", "email": "germancastromontes@gmail.com" },
+  "repository": "https://github.com/gecm0/rpilayer",
+  "license": "Apache-2.0",
+  "keywords": ["humanlayer", "rpi", "research", "plan", "implement"]
+}

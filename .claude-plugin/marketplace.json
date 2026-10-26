@@ -1,0 +1,8 @@
+{
+  "name": "rpilayer",
+  "owner": { "name": "German Castro", "email": "germancastromontes@gmail.com" },
+  "plugins": [
+    { "name": "rpilayer", "source": "./", "description": "Run HumanLayer's Research-Plan-Implement workflow locally" },
+    { "name": "rpilayer-band", "source": "./mod", "description": "Shows rpilayer task progress above the prompt" }
+  ]
+}
