@@ -20,7 +20,7 @@ The page is a stack of `.row`s separated by `<hr>`. Each row has a text column a
 - Lists of similar things (questions, findings, phases) are one `.row` per item, the item in `.item` and its files in `.side .item`.
 - Choices are `.opts`, flows are Mermaid, progress is `.checks`. Plain `<p>` is for connecting sentences.
 - Keep code, paths, commands, and numbers exact. Drop nothing that affects a decision; long original text goes in `<details>`.
-- Write in the artifact's language.
+- Write the view in the language your task names ("written in Spanish" means every heading, sentence, and option title is in Spanish), even if the artifact and the task text are in another language. Keep code, paths, commands, identifiers, and numbers exactly as in the artifact. Only if the task names no language, write in the artifact's language.
 
 ## Components
 

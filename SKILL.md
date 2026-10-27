@@ -85,9 +85,9 @@ Build the HTML view only when it earns its cost. After creating or updating an a
 
 Otherwise skip it and say nothing about it.
 
-To build it, spawn a general-purpose subagent using an inexpensive model available in the current harness (for example, Haiku or Luna) to build the HTML view, and wait for it. The view only restyles content that already exists, so an inexpensive model is sufficient. Give it only this task, with `DIR` and `<task_dir>` as absolute paths: "Read `DIR/view.md` and follow it to build the HTML view of `<task_dir>/<artifact>.md`. Read the artifact yourself; do not ask for more context." Do not write the HTML body yourself or pass it the artifact's text.
+To build it, spawn a general-purpose subagent using an inexpensive model available in the current harness (for example, Haiku or Luna) to build the HTML view, and wait for it. The view only restyles content that already exists, so an inexpensive model is sufficient. Give it only this task, with `DIR` and `<task_dir>` as absolute paths and `<language>` as the language the user writes to you in: "Read `DIR/view.md` and follow it to build the HTML view of `<task_dir>/<artifact>.md`, written in <language>. Read the artifact yourself; do not ask for more context." Do not write the HTML body yourself or pass it the artifact's text.
 
-If the harness has no subagents, do it inline: read `DIR/view.md` again and follow it. Read it every time, even if you built a view earlier in this session: it changes, and HTML or scripts from earlier steps are never a valid template.
+If the harness has no subagents, do it inline: read `DIR/view.md` again and follow it, writing the view in the user's language. Read it every time, even if you built a view earlier in this session: it changes, and HTML or scripts from earlier steps are never a valid template.
 
 ## 5. Close with the next move
 
