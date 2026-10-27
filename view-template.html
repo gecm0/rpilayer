@@ -81,6 +81,10 @@ details summary { cursor: pointer; font: 13px var(--mono); color: var(--dim); }
 footer { margin-top: 96px; font: 13px var(--mono); color: var(--dim); }
 
 /* Open questions (.row.ask): pick an option, add a note, copy everything back to the terminal. */
+.row.ask { grid-template-columns: minmax(0, 900px); }
+.ask .opts { grid-template-columns: 1fr; }
+.ask .opt { border-left: 0; border-top: 1px solid var(--line); }
+.ask .opt:first-child { border-top: 0; }
 .ask .opt { cursor: pointer; }
 .ask .opt:hover { background: var(--bg-2); }
 .ask .opt:focus-visible { outline: 2px solid var(--peach); outline-offset: -2px; }
