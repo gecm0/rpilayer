@@ -30,10 +30,9 @@ Requires Python 3 and Git. `judge` needs `TYPESAFE_API_KEY` in the environment.
 
 ```
 /plugin install rpilayer --marketplace gecm0/rpilayer
-/plugin install rpilayer-band --marketplace gecm0/rpilayer
 ```
 
-`rpilayer-band` is optional: it draws the workflow steps above the prompt. Then type `/rpilayer:rpilayer`.
+This also installs `rpilayer-band`, which draws the workflow steps above the prompt; `/plugin disable rpilayer-band` turns it off. Then type `/rpilayer:rpilayer`.
 
 ### pi package
 
