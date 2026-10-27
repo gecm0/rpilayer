@@ -1,6 +1,6 @@
 {
   "name": "rpilayer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Run HumanLayer's Research-Plan-Implement workflow locally, without the HumanLayer app",
   "author": {
     "name": "German Castro",
