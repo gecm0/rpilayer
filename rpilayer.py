@@ -249,8 +249,12 @@ def steps(kinds, next_name, open_questions=0, unchecked=0, checked=0, phase=None
     done = set(kinds)
     if checked and not unchecked:
         done.add("implement")
+    if next_name == "done":
+        done.add("describe-pr")
     # A current step the list does not show marks nothing as skipped.
     at = names.index(current) if current in names else -1
+    if next_name == "done":
+        at = len(names)
     out = []
     for i, name in enumerate(names):
         if name == current:
@@ -316,7 +320,7 @@ def state(slug=None):
     oq = open_design_questions(text) if kind == "design-discussion" else 0
     unchecked, checked = checkboxes(text) if kind in ("structure-outline", "plan") else (0, 0)
     phase = current_phase(text) if kind in ("structure-outline", "plan") else None
-    nxt = next_step(kind, oq, unchecked, checked)
+    nxt = "done" if "pr-description.md" in files else next_step(kind, oq, unchecked, checked)
 
     return {
         "repo": str(root),

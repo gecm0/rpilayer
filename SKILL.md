@@ -44,6 +44,7 @@ Everything you need is in this file, the JSON, `<base>`, and `<agents>`. Do not 
   - `advance` runs `next`. `iterate` runs `iterate`. `question`: answer it yourself, no step. `other`: leave the workflow.
   - No artifacts yet: `product_first` ≥ 0.6 runs `create-prd`, otherwise `create-research-questions`.
 - Plain "/rpilayer" (or `/rpilayer:rpilayer`, `/skill:rpilayer`) or "continue": run `next`.
+- If `next` is `done`, report that the local workflow is complete and stop. This means `pr-description.md` exists, not that the PR is merged. An explicitly requested step can still run.
 - A HumanLayer text says "run `/rpi:<x>`": that is step `<x>`, run it through section 3.
 
 Say the chosen step in one line, then run it.
@@ -93,6 +94,8 @@ If the harness has no subagents, do it inline: read `DIR/view.md` again and foll
 Apply this section after the whole implementation loop, never between its phases. If implementation is blocked, ask only for what is needed to unblock it and stay in the current context.
 
 A skill cannot clear its own context; only the user can. So end every completed step by telling them exactly what to type. Rerun `state` first and read `next`.
+
+If `next` is `done`, report completion without a next-step command.
 
 - **Moving to a new phase** (you finished a `create-*` or `implement-*` step, or `next` is a different phase than the one you just ran): the artifacts carry everything, and this conversation is now noise. End with the clear command for this harness, then the command that invoked this skill (`/rpilayer` as a skills-dir skill, `/rpilayer:rpilayer` as a Claude Code plugin, `/skill:rpilayer` in pi):
 

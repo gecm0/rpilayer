@@ -175,6 +175,18 @@ class StorageTests(unittest.TestCase):
         file.write_text("- [x] Phase 1: first\n")
         os.chdir(wt)
         self.assertEqual(state()["next"], "describe-pr")
+        self.write(central, "pr-description.md", "PR description")
+        for cwd in (wt, self.repo):
+            os.chdir(cwd)
+            with self.subTest(cwd=cwd):
+                finished = state("test-task")
+                self.assertEqual(finished["next"], "done")
+                marks = {step["name"]: step["status"] for step in finished["steps"]}
+                self.assertEqual(marks["describe-pr"], "done")
+                self.assertEqual(marks["implement"], "done")
+                self.assertEqual(marks["research"], "skipped")
+                self.assertNotIn("current", marks.values())
+                self.assertNotIn("todo", marks.values())
 
     def test_repository_identity_survives_move_and_separates_same_names(self):
         first = tasks_root()
