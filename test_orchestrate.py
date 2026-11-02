@@ -59,13 +59,36 @@ class OrchestrateScripts(unittest.TestCase):
         (task / "verification/phase-1-check-1.png").write_bytes(b"")
         self.assertEqual(self.script("verify-gate.sh", str(self.repo)).returncode, 0)
 
+    def test_gate_sees_boxes_in_nested_subsections(self):
+        task = self.task_dir()
+        (task / "05-plan-x.md").write_text(
+            "#### Manual Verification\n\n##### Keyboard\n\n- [ ] tab to the button\n\n## Phase 2\n")
+        (task / "verification").mkdir()
+        (task / "verification/phase-1-check-1.png").write_bytes(b"")
+        result = self.script("verify-gate.sh", str(self.repo))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("tab to the button", result.stdout)
+
+    def test_advance_resends_brief_and_parent_after_clear(self):
+        task = self.task_dir()
+        (task / "01-research-x.md").write_text("# Research\n")
+        result = subprocess.run([str(SCRIPTS / "advance.sh"), "t1", str(self.repo)], cwd=self.repo,
+                                env={**self.env, "ORCHESTRATE_PARENT": "boss"}, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        calls = self.hc_log.read_text().splitlines()
+        self.assertTrue(calls[0].startswith("keys t1 / c l e a r"))
+        self.assertIn("child-brief.md", calls[2])
+        self.assertIn("boss", calls[2])
+        self.assertEqual(calls[-1], "send t1 /rpilayer")
+
     def test_gate_fails_without_outline_or_plan(self):
         self.task_dir()
         self.assertEqual(self.script("verify-gate.sh", str(self.repo)).returncode, 1)
 
     def test_advance_sends_nothing_on_state_error(self):
         self.run_ok("git", "switch", "-q", "-c", "no-task")  # no task matches: state returns an error
-        result = self.script("advance.sh", "t1", str(self.repo))
+        result = subprocess.run([str(SCRIPTS / "advance.sh"), "t1", str(self.repo)], cwd=self.repo,
+                                env={**self.env, "ORCHESTRATE_PARENT": "boss"}, capture_output=True, text=True)
         self.assertEqual(result.returncode, 5)
         self.assertFalse(self.hc_log.exists())
 
