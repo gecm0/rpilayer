@@ -51,6 +51,16 @@ ln -s ~/Developer/rpilayer ~/.claude/skills/rpilayer
 
 Then type `/rpilayer`. For the band, set `CLAUDE_CODE_PLUGIN_DIRS` to `~/Developer/rpilayer/mod` in the `env` block of `~/.claude/settings.json`.
 
+### orchestrate (optional)
+
+`orchestrate/` runs several tickets in parallel as child Claude sessions, each driven through rpilayer. It needs `hc`, `graft`, `herdr-app`, `agent-browser` and `ocr`, so it ships with neither the plugin nor the pi package. Link it next to rpilayer from the clone:
+
+```bash
+ln -s ~/Developer/rpilayer/orchestrate ~/.claude/skills/orchestrate
+```
+
+Then type `/orchestrate`. Its scripts find `rpilayer.py` in the folder above them.
+
 ## Tests
 
 ```bash
