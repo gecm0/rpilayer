@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Advance a child to its next rpilayer step with a real /clear.
+# Usage: advance.sh <terminal> <worktree> [message]   (message defaults to /rpilayer)
+# Prints the rpilayer state; refuses to advance while design questions are open.
+set -euo pipefail
+RPI="$(cd -P "$(dirname "$0")/../.." && pwd)/rpilayer.py"
+T=$1; W=$2; MSG=${3:-/rpilayer}
+STATE=$(cd "$W" && python3 "$RPI" state)
+echo "$STATE" | python3 -c '
+import json, sys
+s = json.load(sys.stdin)
+print("next:", s.get("next"), "| open design questions:", s.get("open_design_questions"), "| latest:", s.get("latest"))
+sys.exit(3 if (s.get("open_design_questions") or 0) > 0 else 0)
+' || { echo "STOP: open design questions, needs Germán"; exit 3; }
+# Code review only after every manual check ran in a browser (verify-gate.sh).
+if [[ "$MSG" == *open-code-review* ]]; then
+  "$(dirname "$0")/verify-gate.sh" "$W" || { echo "STOP: browser verification incomplete, send the child back to it"; exit 4; }
+fi
+# hc send wraps text in <hc> tags, so /clear must be typed as keys to run as a command.
+hc keys "$T" / c l e a r enter >/dev/null
+hc wait "$T" --timeout 60 >/dev/null || true
+hc send "$T" "$MSG" >/dev/null
+echo "sent to $T: $MSG"
