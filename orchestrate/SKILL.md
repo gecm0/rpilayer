@@ -55,7 +55,7 @@ open_design_questions > 0, or the child asks for a decision?
     └── blocked / ABORT / dead terminal → read the child's screen (hc read), fix the cause or ask the user
 ```
 
-Why `advance.sh`: `/clear` only works as typed keys (`hc keys <t> / c l e a r enter`); `hc send "/clear"` arrives wrapped as a message and the model just replies. Skill commands work through `hc send` because the model invokes them.
+Why `advance.sh`: `/clear` only works as typed keys (`hc keys <t> / c l e a r enter`); `hc send "/clear"` arrives wrapped as a message and the model just replies. Skill commands work through `hc send` because the model invokes them. Run it as `ORCHESTRATE_PARENT=<your session name> DIR/scripts/advance.sh ...`: after the clear it tells the child to re-read `DIR/child-brief.md` and names you as its parent, because `/clear` drops the launch message that carried both.
 
 ## 4. After merges
 

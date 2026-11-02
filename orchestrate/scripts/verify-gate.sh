@@ -17,7 +17,8 @@ print(s["task_dir"]); print("\n".join(docs))
 TD=$(echo "$DOCS" | head -1)
 docs=()
 while IFS= read -r doc; do docs+=("$doc"); done < <(echo "$DOCS" | tail -n +2)
-open=$(awk 'FNR==1{f=0} /^#+ *Manual Verification/{f=1;next} /^#/{f=0} f && /^[[:space:]]*- \[ \]/ && !/HUMAN-ONLY:/' "${docs[@]}")
+# A heading ends the section only at the same or a higher level; subsections stay inside it.
+open=$(awk 'FNR==1{f=0} /^#+ *Manual Verification/{f=1;match($0,/^#+/);lvl=RLENGTH;next} f && /^#/{match($0,/^#+/);if(RLENGTH<=lvl)f=0} f && /^[[:space:]]*- \[ \]/ && !/HUMAN-ONLY:/' "${docs[@]}")
 shots=$( (find "$TD/verification" -name "*.png" 2>/dev/null || true) | wc -l | tr -d " " || true)
 if [ -n "$open" ]; then echo "OPEN manual checks:"; echo "$open"; exit 1; fi
 [ "$shots" -gt 0 ] || { echo "No screenshots in $TD/verification"; exit 1; }
