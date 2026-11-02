@@ -9,9 +9,10 @@ STATE=$(cd "$W" && python3 "$RPI" state)
 echo "$STATE" | python3 -c '
 import json, sys
 s = json.load(sys.stdin)
+if s.get("error"): print("rpilayer state error:", s["error"]); sys.exit(5)
 print("next:", s.get("next"), "| open design questions:", s.get("open_design_questions"), "| latest:", s.get("latest"))
 sys.exit(3 if (s.get("open_design_questions") or 0) > 0 else 0)
-' || { echo "STOP: open design questions, needs Germán"; exit 3; }
+' || { rc=$?; [ $rc -eq 3 ] && echo "STOP: open design questions, needs Germán" || echo "STOP: no usable rpilayer state, nothing sent"; exit $rc; }
 # Code review only after every manual check ran in a browser (verify-gate.sh).
 if [[ "$MSG" == *open-code-review* ]]; then
   "$(dirname "$0")/verify-gate.sh" "$W" || { echo "STOP: browser verification incomplete, send the child back to it"; exit 4; }
